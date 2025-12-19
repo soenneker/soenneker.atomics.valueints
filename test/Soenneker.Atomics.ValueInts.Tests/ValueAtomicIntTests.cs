@@ -2,7 +2,6 @@
 
 namespace Soenneker.Atomics.ValueInts.Tests;
 
-[Collection("Collection")]
 public sealed class ValueAtomicIntTests
 {
     [Fact]
