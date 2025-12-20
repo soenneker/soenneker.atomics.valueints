@@ -222,6 +222,12 @@ public struct ValueAtomicInt
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void VolatileWrite(int value)
+    {
+        Volatile.Write(ref _value, value);
+    }
+
     /// <summary>
     /// Atomically combines the current value with <paramref name="x"/> using <paramref name="accumulator"/>
     /// in a CAS loop and returns the resulting value.
