@@ -87,7 +87,27 @@ public struct ValueAtomicInt
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Add(int delta) => Interlocked.Add(ref _value, delta);
 
-    // ---- Get-and (returns previous) ----
+    /// <summary>
+    /// Performs an atomic bitwise OR operation between the current value and the specified mask, updating the value in
+    /// a thread-safe manner.
+    /// </summary>
+    /// <remarks>This method is thread-safe and uses atomic operations to ensure that the update is performed
+    /// without interference from other threads.</remarks>
+    /// <param name="mask">The bit mask to apply to the current value. Each bit set in this parameter will set the corresponding bit in the
+    /// current value.</param>
+    /// <returns>The new value after the bitwise OR operation has been applied.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int Or(int mask) => Interlocked.Or(ref _value, mask);
+
+    /// <summary>
+    /// Performs an atomic bitwise AND operation between the current value and the specified mask.
+    /// </summary>
+    /// <remarks>This method is thread-safe and uses interlocked operations to ensure atomicity. It can be
+    /// used safely in multi-threaded scenarios to update the value without race conditions.</remarks>
+    /// <param name="mask">The mask to apply to the current value. Only the bits set in both the current value and the mask are retained.</param>
+    /// <returns>The new value resulting from the bitwise AND operation.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int And(int mask) => Interlocked.And(ref _value, mask);
 
     /// <summary>
     /// Atomically increments the value and returns the previous value.
