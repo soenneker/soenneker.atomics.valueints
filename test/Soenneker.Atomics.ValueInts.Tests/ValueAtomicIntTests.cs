@@ -1,10 +1,9 @@
-﻿using Xunit;
 
 namespace Soenneker.Atomics.ValueInts.Tests;
 
 public sealed class ValueAtomicIntTests
 {
-    [Fact]
+    [Test]
     public void Default()
     {
 
