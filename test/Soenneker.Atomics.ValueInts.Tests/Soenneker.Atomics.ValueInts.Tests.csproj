@@ -13,10 +13,5 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Soenneker.Atomics.ValueInts\Soenneker.Atomics.ValueInts.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-        <Content Include="testconfig.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
 </Project>
+
