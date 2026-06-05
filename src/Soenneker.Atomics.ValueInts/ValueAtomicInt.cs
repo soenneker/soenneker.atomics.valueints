@@ -18,9 +18,6 @@ public struct ValueAtomicInt
 {
     private int _value;
 
-    /// <summary>
-    /// Initializes a new <see cref="ValueAtomicInt"/> with an optional initial value.
-    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ValueAtomicInt(int initialValue = 0) => _value = initialValue;
 
