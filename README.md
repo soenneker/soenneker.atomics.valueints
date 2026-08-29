@@ -13,6 +13,27 @@ A lightweight, allocation-free atomic `int` struct backed by `Volatile` and `Int
 dotnet add package Soenneker.Atomics.ValueInts
 ```
 
+## Usage
+
+Use `ValueAtomicInt` as a field, not as a copied local value:
+
+```csharp
+using Soenneker.Atomics.ValueInts;
+
+public sealed class QueueMetrics
+{
+    private ValueAtomicInt _depth;
+
+    public int Enqueued() => _depth.Increment();
+    public int Dequeued() => _depth.Decrement();
+    public int ReadDepth() => _depth.Read();
+}
+```
+
+Because this is a mutable struct, returning it from a property or passing it by value creates an independent counter. Use the reference-type `AtomicInt` package when multiple objects must share the wrapper itself.
+
+`Update` and `Accumulate` may invoke their delegate repeatedly during compare-and-exchange retries. Delegates must be side-effect free.
+
 ## What you get
 
 - `ValueAtomicInt` — A lightweight, allocation-free atomic `int` struct backed by `Volatile` and `Interlocked` operations. Intended for use as a private field / inline synchronization primitive. Because this is a mutable `struct`, avoid copying it (e.g., returning it from properties or storing it in collections where it may be copied by value).
@@ -29,8 +50,8 @@ dotnet add package Soenneker.Atomics.ValueInts
 | `ValueAtomicInt.Increment()` | Atomically increments the value and returns the incremented value. | The incremented value. |
 | `ValueAtomicInt.Decrement()` | Atomically decrements the value and returns the decremented value. | The decremented value. |
 | `ValueAtomicInt.Add(delta)` | Atomically adds `delta` and returns the resulting value. | The resulting value. |
-| `ValueAtomicInt.Or(mask)` | Performs an atomic bitwise OR operation between the current value and the specified mask, updating the value in a thread-safe manner. | The new value after the bitwise OR operation has been applied. |
-| `ValueAtomicInt.And(mask)` | Performs an atomic bitwise AND operation between the current value and the specified mask. | The new value resulting from the bitwise AND operation. |
+| `ValueAtomicInt.Or(mask)` | Atomically applies a bitwise OR mask. | The value observed before the OR operation. Read again when the resulting value is required. |
+| `ValueAtomicInt.And(mask)` | Atomically applies a bitwise AND mask. | The value observed before the AND operation. Read again when the resulting value is required. |
 | `ValueAtomicInt.GetAndIncrement()` | Atomically increments the value and returns the previous value. | The value that was stored before the atomic update. |
 | `ValueAtomicInt.GetAndDecrement()` | Atomically decrements the value and returns the previous value. | The value that was stored before the atomic update. |
 | `ValueAtomicInt.GetAndAdd(delta)` | Atomically adds `delta` and returns the previous value. | The value that was stored before the atomic update. |
@@ -42,6 +63,6 @@ dotnet add package Soenneker.Atomics.ValueInts
 
 ## Important behavior
 
-- `ValueAtomicInt.Or(mask)`: This method is thread-safe and uses atomic operations to ensure that the update is performed without interference from other threads.
-- `ValueAtomicInt.And(mask)`: This method is thread-safe and uses interlocked operations to ensure atomicity. It can be used safely in multi-threaded scenarios to update the value without race conditions.
+- `ValueAtomicInt.Or(mask)`: This method returns the value from before the atomic update, matching `Interlocked.Or` semantics.
+- `ValueAtomicInt.And(mask)`: This method returns the value from before the atomic update, matching `Interlocked.And` semantics.
 - `ValueAtomicInt.VolatileWrite(value)`: Use this method to update the field in multithreaded scenarios where it is important that the most recent value is observed by all threads. This method provides a memory barrier to prevent certain types of reordering by the compiler or processor.
