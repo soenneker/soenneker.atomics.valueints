@@ -36,18 +36,22 @@ public struct ValueAtomicInt
     /// <summary>
     /// Reads the current value using acquire semantics.
     /// </summary>
+    /// <returns>The current value observed with acquire memory-ordering semantics.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Read() => Volatile.Read(ref _value);
 
     /// <summary>
     /// Writes the value atomically.
     /// </summary>
+    /// <param name="value">Replacement value to store atomically.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(int value) => Interlocked.Exchange(ref _value, value);
 
     /// <summary>
     /// Atomically replaces the current value with <paramref name="value"/> and returns the previous value.
     /// </summary>
+    /// <param name="value">Replacement value to store atomically.</param>
+    /// <returns>The value that was stored before the atomic update.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Exchange(int value) => Interlocked.Exchange(ref _value, value);
 
@@ -55,6 +59,9 @@ public struct ValueAtomicInt
     /// Atomically sets the value to <paramref name="value"/> if the current value equals <paramref name="comparand"/>.
     /// Returns the original value.
     /// </summary>
+    /// <param name="value">Replacement value stored only when the expected value matches.</param>
+    /// <param name="comparand">Expected current value required for the atomic replacement.</param>
+    /// <returns>The value observed before the compare-and-exchange attempt.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int CompareExchange(int value, int comparand) =>
         Interlocked.CompareExchange(ref _value, value, comparand);
@@ -62,6 +69,9 @@ public struct ValueAtomicInt
     /// <summary>
     /// Attempts to set the value to <paramref name="value"/> if the current value equals <paramref name="comparand"/>.
     /// </summary>
+    /// <param name="value">Replacement value stored only when the expected value matches.</param>
+    /// <param name="comparand">Expected current value required for the atomic replacement.</param>
+    /// <returns>true if the requested update was applied; otherwise, false.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryCompareExchange(int value, int comparand) =>
         Interlocked.CompareExchange(ref _value, value, comparand) == comparand;
@@ -69,18 +79,22 @@ public struct ValueAtomicInt
     /// <summary>
     /// Atomically increments the value and returns the incremented value.
     /// </summary>
+    /// <returns>The incremented value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Increment() => Interlocked.Increment(ref _value);
 
     /// <summary>
     /// Atomically decrements the value and returns the decremented value.
     /// </summary>
+    /// <returns>The decremented value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Decrement() => Interlocked.Decrement(ref _value);
 
     /// <summary>
     /// Atomically adds <paramref name="delta"/> and returns the resulting value.
     /// </summary>
+    /// <param name="delta">Amount to add atomically.</param>
+    /// <returns>The resulting value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Add(int delta) => Interlocked.Add(ref _value, delta);
 
@@ -109,18 +123,22 @@ public struct ValueAtomicInt
     /// <summary>
     /// Atomically increments the value and returns the previous value.
     /// </summary>
+    /// <returns>The value that was stored before the atomic update.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetAndIncrement() => Interlocked.Increment(ref _value) - 1;
 
     /// <summary>
     /// Atomically decrements the value and returns the previous value.
     /// </summary>
+    /// <returns>The value that was stored before the atomic update.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetAndDecrement() => Interlocked.Decrement(ref _value) + 1;
 
     /// <summary>
     /// Atomically adds <paramref name="delta"/> and returns the previous value.
     /// </summary>
+    /// <param name="delta">Amount to add atomically.</param>
+    /// <returns>The value that was stored before the atomic update.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetAndAdd(int delta) => Interlocked.Add(ref _value, delta) - delta;
 
@@ -129,18 +147,22 @@ public struct ValueAtomicInt
     /// <summary>
     /// Atomically adds <paramref name="delta"/> and returns the resulting value.
     /// </summary>
+    /// <param name="delta">Amount to add atomically.</param>
+    /// <returns>The resulting value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int AddAndGet(int delta) => Interlocked.Add(ref _value, delta);
 
     /// <summary>
     /// Atomically increments the value and returns the resulting value.
     /// </summary>
+    /// <returns>The resulting value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int IncrementAndGet() => Interlocked.Increment(ref _value);
 
     /// <summary>
     /// Atomically decrements the value and returns the resulting value.
     /// </summary>
+    /// <returns>The resulting value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int DecrementAndGet() => Interlocked.Decrement(ref _value);
 
@@ -149,6 +171,8 @@ public struct ValueAtomicInt
     /// <summary>
     /// Attempts to set the value to <paramref name="value"/> if it is greater than the current value.
     /// </summary>
+    /// <param name="value">Candidate value stored only when it is greater than the current value.</param>
+    /// <returns>true if the requested update was applied; otherwise, false.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TrySetIfGreater(int value)
     {
@@ -162,6 +186,8 @@ public struct ValueAtomicInt
     /// <summary>
     /// Attempts to set the value to <paramref name="value"/> if it is less than the current value.
     /// </summary>
+    /// <param name="value">Candidate value stored only when it is less than the current value.</param>
+    /// <returns>true if the requested update was applied; otherwise, false.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TrySetIfLess(int value)
     {
@@ -175,6 +201,8 @@ public struct ValueAtomicInt
     /// <summary>
     /// Sets the value to <paramref name="value"/> if it is greater than the current value, returning the effective value.
     /// </summary>
+    /// <param name="value">Candidate value stored only when it is greater than the current value.</param>
+    /// <returns>The effective value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int SetIfGreater(int value)
     {
@@ -197,6 +225,8 @@ public struct ValueAtomicInt
     /// <summary>
     /// Sets the value to <paramref name="value"/> if it is less than the current value, returning the effective value.
     /// </summary>
+    /// <param name="value">Candidate value stored only when it is less than the current value.</param>
+    /// <returns>The effective value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int SetIfLess(int value)
     {
@@ -221,6 +251,8 @@ public struct ValueAtomicInt
     /// <summary>
     /// Atomically applies <paramref name="update"/> in a CAS loop and returns the updated value.
     /// </summary>
+    /// <param name="update">Function that computes a replacement value from the current value.</param>
+    /// <returns>The updated value.</returns>
     public int Update(Func<int, int> update)
     {
         if (update is null)
@@ -259,6 +291,9 @@ public struct ValueAtomicInt
     /// Atomically combines the current value with <paramref name="x"/> using <paramref name="accumulator"/>
     /// in a CAS loop and returns the resulting value.
     /// </summary>
+    /// <param name="x">Operand passed to the accumulator function.</param>
+    /// <param name="accumulator">Function that combines the current value with the supplied operand.</param>
+    /// <returns>The resulting value.</returns>
     public int Accumulate(int x, Func<int, int, int> accumulator)
     {
         if (accumulator is null)
@@ -283,9 +318,9 @@ public struct ValueAtomicInt
     /// Attempts to set the value to <paramref name="value"/> if the current value
     /// equals <paramref name="expected"/>.
     /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the value was updated; otherwise <see langword="false"/>.
-    /// </returns>
+    /// <param name="value">Replacement value stored only when the expected value matches.</param>
+    /// <param name="expected">Value that must currently be stored for the update to succeed.</param>
+    /// <returns><see langword="true"/> if the value was updated; otherwise <see langword="false"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TrySet(int value, int expected) => Interlocked.CompareExchange(ref _value, value, expected) == expected;
 
